@@ -1,19 +1,28 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:imali/src/portfolio.dart';
-import 'package:youtube_player_flutter/youtube_player_flutter.dart';
-import '../../methods.dart';
 import '../../res/styles.dart';
 
-class Summary extends StatelessWidget {
+class Summary extends StatefulWidget {
+  const Summary({Key? key}) : super(key: key);
+
+  @override
+  State<Summary> createState() => _SummaryState();
+}
+
+class _SummaryState extends State<Summary> {
   String user = 'Kimberly';
+
   String? mmfVal = '0.0';
+
   String? mmfCashVal = '0.00';
+
   String? shareVal = '0.0';
+
   String? shareCashVal = '0.00';
+
   String? bondVal = '0.0';
+
   String? bondCashVal = '0.00';
 
   @override
@@ -139,12 +148,12 @@ class Summary extends StatelessWidget {
                 ],
               ),
             ),
-            Padding(padding: const EdgeInsets.only(top: 10)),
+            const Padding(padding: EdgeInsets.only(top: 10)),
             SizedBox(
               width: width(context),
               height: height(context) * 0.25,
               child: ListView.builder(
-                physics: BouncingScrollPhysics(),
+                physics: const BouncingScrollPhysics(),
                 itemCount: 5,
                 itemBuilder: (context, index) {
                   var _item = portfolioItems.where((element) => element.assetValue > 0).toList()[index];
@@ -152,7 +161,7 @@ class Summary extends StatelessWidget {
                     width: width(context),
                     child: Column(
                       children: [
-                        Padding(padding: const EdgeInsets.only(top: 10)),
+                        const Padding(padding: EdgeInsets.only(top: 10)),
                         Row(
                           children: [
                             Expanded(
@@ -175,7 +184,7 @@ class Summary extends StatelessWidget {
                             ),
                           ],
                         ),
-                      Padding(padding: const EdgeInsets.only(top: 10)),
+                      const Padding(padding: EdgeInsets.only(top: 10)),
                       ],
                     ),
                   );

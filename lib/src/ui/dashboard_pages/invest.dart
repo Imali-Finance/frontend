@@ -1,14 +1,19 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:youtube_player_flutter/youtube_player_flutter.dart';
-import '../../methods.dart';
 import '../../res/styles.dart';
 
-class Invest extends StatelessWidget {
+class Invest extends StatefulWidget {
 
+
+  const Invest({Key? key}) : super(key: key);
+
+  @override
+  State<Invest> createState() => _InvestState();
+}
+
+class _InvestState extends State<Invest> {
   String user = 'Kimberly';
+
   @override
   Widget build(BuildContext context) {
     return Container(

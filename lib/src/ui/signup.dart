@@ -1,6 +1,5 @@
 import 'dart:developer';
 import 'dart:io';
-import 'dart:ui';
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -24,8 +23,7 @@ class _SignUpState extends State<SignUp> {
       _email = TextEditingController(),
       _password = TextEditingController(),
       _confirmPass = TextEditingController(),
-      _dob = TextEditingController(),
-      _verification = TextEditingController();
+      _dob = TextEditingController();
   final ImagePicker _picker = ImagePicker();
   late GlobalKey<FormState> _form1, _form2, _form3;
   final PageController _controller = PageController();
@@ -249,13 +247,13 @@ class _SignUpState extends State<SignUp> {
             onPressed: () {
               showCustomDialog(context, 'Change phone number', 's', [
                 TextButton(
-                  child: Text('Change Number'),
+                  child: const Text('Change Number'),
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
                 ),
                 TextButton(
-                  child: Text('Dismiss'),
+                  child: const Text('Dismiss'),
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
@@ -370,8 +368,9 @@ class _SignUpState extends State<SignUp> {
                     controller: _username,
                     validator: (val) {
                       if (val!.isEmpty) return 'Please enter a username';
-                      if (!RegExp(r'^(?=.{8,20}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$').hasMatch(val))
+                      if (!RegExp(r'^(?=.{8,20}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$').hasMatch(val)) {
                         return 'Please enter a valid username';
+                      }
                       if (val.length <= 3) return 'Please enter a valid username';
                       return null;
                     },
@@ -385,8 +384,10 @@ class _SignUpState extends State<SignUp> {
                     controller: _email,
                     validator: (val) {
                       if (val!.isEmpty) return 'Please enter your email address';
-                      if (!RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(val))
+                      if (!RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                          .hasMatch(val)) {
                         return 'Please enter a valid email address';
+                      }
                       return null;
                     },
                     autofillHints: const [AutofillHints.email],

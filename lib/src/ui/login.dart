@@ -1,5 +1,4 @@
 import 'dart:developer';
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -197,7 +196,7 @@ class _LogInState extends State<LogIn> {
                   ),
                 ),
               ),
-              Spacer(),
+              const Spacer(),
               TextButton(
                 onPressed: () => Navigator.pushReplacementNamed(context, 'Sign Up'),
                 child: Text(

@@ -1,16 +1,26 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import '../../methods.dart';
 import '../../res/styles.dart';
 
-class Account extends StatelessWidget {
+class Account extends StatefulWidget {
+
+  const Account({Key? key}) : super(key: key);
+
+  @override
+  State<Account> createState() => _AccountState();
+}
+
+class _AccountState extends State<Account> {
   String user = 'Kimberly Kuya';
+
   String username = 'kimberlykuya';
+
   String email = 'kimberlykeisha9@gmail.com';
+
   String phoneNumber = '+254712345678';
+
   @override
   Widget build(BuildContext context) {
     return Container(

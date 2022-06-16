@@ -1,20 +1,28 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
-import '../../methods.dart';
 import '../../res/styles.dart';
 
-class Unverified extends StatelessWidget {
-//   final YoutubePlayerController _controller = YoutubePlayerController(
-//     initialVideoId: 'iLnmTe5Q2Qw',
-//     flags: const YoutubePlayerFlags(
-//         autoPlay: false,
-//         mute: true,
-//     ),
-// );
+class Unverified extends StatefulWidget {
+
+  const Unverified({Key? key}) : super(key: key);
+
+  @override
+  State<Unverified> createState() => _UnverifiedState();
+}
+
+class _UnverifiedState extends State<Unverified> {
+  final YoutubePlayerController _controller = YoutubePlayerController(
+    initialVideoId: 'f7V0NELM8BQ',
+    flags: const YoutubePlayerFlags(
+        autoPlay: false,
+        showLiveFullscreenButton: false,
+        useHybridComposition: false,
+    ),
+);
+
   String user = 'Kimberly';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,12 +53,9 @@ class Unverified extends StatelessWidget {
                   color: primary(context),
                 ),
               ),
-              // child: YoutubePlayer(
-              //   controller: _controller,
-    //           onReady () {
-    //     _controller.addListener(listener);
-    // },
-              // )
+              child: YoutubePlayer(
+                controller: _controller,
+              )
             ),
             const Spacer(),
           ],
