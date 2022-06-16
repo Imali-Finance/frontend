@@ -6,6 +6,7 @@ import 'package:imali/src/ui/home.dart';
 import 'package:imali/src/ui/login.dart';
 import 'res/styles.dart';
 import 'settings/settings_controller.dart';
+import 'ui/signup.dart';
 
 /// The Widget that configures your application.
 class MyApp extends StatelessWidget {
@@ -52,6 +53,7 @@ class MyApp extends StatelessWidget {
           routes: {
             'Home': (context) => const Home(),
             'Log In': (context) => const LogIn(),
+            'Sign Up': (context) => const SignUp(),
           },
           // Define a function to handle named routes in order to support
           // Flutter web url navigation and deep linking.

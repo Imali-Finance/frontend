@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -7,7 +7,7 @@ double width(BuildContext context) {
 }
 
 double height(BuildContext context) {
-  return MediaQuery.of(context).size.width;
+  return MediaQuery.of(context).size.height;
 }
 
 Color primary(BuildContext context) {
@@ -25,12 +25,14 @@ Color onPrimary(BuildContext context) {
 var themeData = ThemeData(
   outlinedButtonTheme: OutlinedButtonThemeData(
     style: OutlinedButton.styleFrom(
-      padding: const EdgeInsets.all(25),
+      padding: const EdgeInsets.all(20),
       side: const BorderSide(color: Colors.white),
       shape: const RoundedRectangleBorder(),
     ),
   ),
   inputDecorationTheme: InputDecorationTheme(
+    suffixIconColor: Colors.white,
+    iconColor: Colors.white,
     hintStyle: TextStyle(
       color: Colors.white.withOpacity(0.25),
     ),
@@ -91,3 +93,38 @@ var themeData = ThemeData(
     onPrimary: Colors.white,
   ),
 );
+
+Future<void> showCustomDialog(BuildContext context, String title, String content, List<Widget>? actions) {
+    return showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => BackdropFilter(
+        filter: ImageFilter.blur(
+          sigmaX: 4,
+          sigmaY: 4,
+        ),
+        child: AlertDialog(
+          actionsPadding: const EdgeInsets.all(20),
+          contentTextStyle: Theme.of(context).textTheme.bodyText2,
+          backgroundColor: background(context),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+            side: BorderSide(
+              color: primary(context),
+            ),
+          ),
+          title: Text(
+            title,
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          content: Text(
+            content,
+            textAlign: TextAlign.justify,
+          ),
+          actions: actions,
+        ),
+      ),
+    );
+  }

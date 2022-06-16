@@ -20,7 +20,7 @@ class _HomeState extends State<Home> {
         title: Hero(
           tag: 'logo',
           child: SvgPicture.asset(
-            'images/Logo.svg',
+            'assets/images/Logo.svg',
             height: 40,
           ),
         ),
@@ -32,14 +32,14 @@ class _HomeState extends State<Home> {
         child: Column(
           children: [
             Expanded(
-              flex: 10,
+              flex: 15,
               child: Container(
                 width: width(context),
                 height: width(context),
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
                   border: Border.all(
-                    color: onPrimary(context),
+                    color: primary(context),
                   ),
                 ),
                 child: Column(
@@ -60,7 +60,7 @@ class _HomeState extends State<Home> {
                       ),
                     ),
                     Center(
-                      child: SvgPicture.asset('images/home3.svg'),
+                      child: SvgPicture.asset('assets/images/home3.svg'),
                     ),
                     Align(
                       alignment: Alignment.bottomLeft,
@@ -95,7 +95,7 @@ class _HomeState extends State<Home> {
             SizedBox(
               width: width(context),
               child: OutlinedButton(
-                onPressed: () => {},
+                onPressed: () => Navigator.pushNamed(context, 'Sign Up'),
                 child: Text(
                   AppLocalizations.of(context)!.registerButton,
                 ),

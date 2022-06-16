@@ -25,7 +25,7 @@ class _LogInState extends State<LogIn> {
           child: Hero(
             tag: 'logo',
             child: SvgPicture.asset(
-              'images/Logo.svg',
+              'assets/images/Logo.svg',
               height: 30,
             ),
           ),
@@ -51,7 +51,7 @@ class _LogInState extends State<LogIn> {
               ),
               const Spacer(),
               SizedBox(
-                width: width(context) * 0.5,
+                width: width(context) * 0.6,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
@@ -62,8 +62,8 @@ class _LogInState extends State<LogIn> {
                           showSnackbar(context, 'This feature is not currently available.'),
                         },
                         child: Container(
-                          height: 30,
-                          width: 30,
+                          height: 25,
+                          width: 25,
                           padding: const EdgeInsets.all(5),
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
@@ -73,7 +73,7 @@ class _LogInState extends State<LogIn> {
                           ),
                           child: Center(
                             child: SvgPicture.asset(
-                              'images/facebook.svg',
+                              'assets/images/facebook.svg',
                             ),
                           ),
                         ),
@@ -86,8 +86,8 @@ class _LogInState extends State<LogIn> {
                           showSnackbar(context, 'This feature is not currently available.'),
                         },
                         child: Container(
-                          height: 30,
-                          width: 30,
+                          height: 25,
+                          width: 25,
                           padding: const EdgeInsets.all(5),
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
@@ -97,7 +97,7 @@ class _LogInState extends State<LogIn> {
                           ),
                           child: Center(
                             child: SvgPicture.asset(
-                              'images/google.svg',
+                              'assets/images/google.svg',
                             ),
                           ),
                         ),
@@ -110,8 +110,8 @@ class _LogInState extends State<LogIn> {
                           showSnackbar(context, 'This feature is not currently available.'),
                         },
                         child: Container(
-                          height: 30,
-                          width: 30,
+                          height: 25,
+                          width: 25,
                           padding: const EdgeInsets.all(5),
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
@@ -121,7 +121,7 @@ class _LogInState extends State<LogIn> {
                           ),
                           child: Center(
                             child: SvgPicture.asset(
-                              'images/twitter.svg',
+                              'assets/images/twitter.svg',
                             ),
                           ),
                         ),
@@ -199,48 +199,13 @@ class _LogInState extends State<LogIn> {
               ),
               Spacer(),
               TextButton(
-                onPressed: () {},
+                onPressed: () => Navigator.pushReplacementNamed(context, 'Sign Up'),
                 child: Text(
                   AppLocalizations.of(context)!.noAccount,
                 ),
               ),
             ],
           ),
-        ),
-      ),
-    );
-  }
-
-  Future<void> showCustomDialog(BuildContext context, String title, String content, List<Widget>? actions) {
-    return showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) => BackdropFilter(
-        filter: ImageFilter.blur(
-          sigmaX: 4,
-          sigmaY: 4,
-        ),
-        child: AlertDialog(
-          actionsPadding: const EdgeInsets.all(20),
-          contentTextStyle: Theme.of(context).textTheme.bodyText2,
-          backgroundColor: background(context),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
-            side: BorderSide(
-              color: primary(context),
-            ),
-          ),
-          title: Text(
-            title,
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          content: Text(
-            content,
-            textAlign: TextAlign.justify,
-          ),
-          actions: actions,
         ),
       ),
     );
