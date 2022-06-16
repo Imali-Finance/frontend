@@ -40,13 +40,21 @@
   "home2": "TRADE BETTER.",
   "home3": "EARN BIGGER.",
   "ok": "OK",
-  "unverifiedTitle": "Dear",
-  "unverifiedBody": "Your account has not been reviewed yet by out team. Once we have reviewed your detais, your account can be activated.\nIf there is any issue, will send you an email on how to further proceed.\nIn the mean time, check out Imali's Guide to Investment video on youtube to be prepared once you get started.",
-  "morning": "Good Morning",
-  "afternoon": "Good Afternoon",
-  "evening": "Good Evening",
+  "unverifiedTitle": "Dear {name}",
+  "@unverifiedTitle": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "unverifiedBody": "Your account has not been reviewed yet by our team. Once we have reviewed your details, your account can be activated.\n\nIf there is any issue, we will send you an email on how to further proceed.\n\nIn the mean time, check out Imali's Guide to Investment video on youtube to be prepared once you get started.",
+  "greeting" : "{time, select, morning{Good Morning} afternoon{Good Afternoon} evening{Good Evening}}",
+  "@greeting": {
+    "placeholders": {
+      "time": {}
+    }
+  },
   "portfolio": "Portfolio",
-  "portfolioSummary": "Portfolio Summary",
+  "portfolioSummary": "Portfolio Summary (Top 5)",
   "asset": "Asset",
   "lastPrice": "Last Price (KES)",
   "change": "24h chg(%)",

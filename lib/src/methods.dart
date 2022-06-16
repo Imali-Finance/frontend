@@ -26,3 +26,21 @@ showSnackbar(BuildContext context, String message, {var action, String? actionLa
     ),
   );
 }
+
+showBanner(BuildContext context, String message) {
+  ScaffoldMessenger.of(context).showMaterialBanner(
+    MaterialBanner(
+      backgroundColor: background(context),
+      content: Text(message),
+      actions: [
+        IconButton(
+          icon: Icon(
+            Icons.close,
+            color: primary(context),
+          ),
+          onPressed: () => ScaffoldMessenger.of(context).clearMaterialBanners(),
+        )
+      ],
+    ),
+  );
+}

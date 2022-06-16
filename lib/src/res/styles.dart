@@ -40,6 +40,10 @@ var themeData = ThemeData(
       borderSide: BorderSide(color: Colors.white),
     ),
   ),
+  bottomNavigationBarTheme: BottomNavigationBarThemeData(
+    showUnselectedLabels: false,
+    backgroundColor: Colors.grey[900]!,
+  ),
   textTheme: TextTheme(
     headline4: GoogleFonts.roboto(
       textStyle: const TextStyle(
@@ -78,7 +82,14 @@ var themeData = ThemeData(
         color: Colors.white,
       ),
     ),
+    subtitle2: GoogleFonts.roboto(
+      textStyle: const TextStyle(
+        color: Colors.white,
+        fontSize: 18,
+      ),
+    ),
   ),
+  canvasColor: Colors.grey[900],
   appBarTheme: const AppBarTheme(
     centerTitle: true,
     elevation: 0,
@@ -94,37 +105,40 @@ var themeData = ThemeData(
   ),
 );
 
-Future<void> showCustomDialog(BuildContext context, String title, String content, List<Widget>? actions) {
-    return showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) => BackdropFilter(
-        filter: ImageFilter.blur(
-          sigmaX: 4,
-          sigmaY: 4,
-        ),
-        child: AlertDialog(
-          actionsPadding: const EdgeInsets.all(20),
-          contentTextStyle: Theme.of(context).textTheme.bodyText2,
-          backgroundColor: background(context),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
-            side: BorderSide(
-              color: primary(context),
-            ),
-          ),
-          title: Text(
-            title,
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          content: Text(
-            content,
-            textAlign: TextAlign.justify,
-          ),
-          actions: actions,
-        ),
+Future<void> showCustomDialog(BuildContext context, String title, String content, List<Widget>? actions,
+    {List<Widget>? otherActions}) {
+  return showDialog(
+    context: context,
+    barrierDismissible: false,
+    builder: (context) => BackdropFilter(
+      filter: ImageFilter.blur(
+        sigmaX: 4,
+        sigmaY: 4,
       ),
-    );
-  }
+      child: AlertDialog(
+        actionsPadding: const EdgeInsets.all(20),
+        contentTextStyle: Theme.of(context).textTheme.bodyText2,
+        backgroundColor: background(context),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+          side: BorderSide(
+            color: primary(context),
+          ),
+        ),
+        title: Text(
+          title,
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        content: otherActions == null
+            ? Text(
+                content,
+                textAlign: TextAlign.justify,
+              )
+            : Wrap(children: otherActions),
+        actions: actions,
+      ),
+    ),
+  );
+}

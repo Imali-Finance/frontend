@@ -6,6 +6,7 @@ import 'package:imali/src/ui/home.dart';
 import 'package:imali/src/ui/login.dart';
 import 'res/styles.dart';
 import 'settings/settings_controller.dart';
+import 'ui/dashboard.dart';
 import 'ui/signup.dart';
 
 /// The Widget that configures your application.
@@ -48,12 +49,13 @@ class MyApp extends StatelessWidget {
             Locale('en', ''), // English, no country code
           ],
           onGenerateTitle: (BuildContext context) => AppLocalizations.of(context)!.appTitle,
-          initialRoute: 'Home',
+          initialRoute: 'Dashboard',
           home: const Home(),
           routes: {
             'Home': (context) => const Home(),
             'Log In': (context) => const LogIn(),
             'Sign Up': (context) => const SignUp(),
+            'Dashboard': (context) => const Dashboard(),
           },
           // Define a function to handle named routes in order to support
           // Flutter web url navigation and deep linking.
