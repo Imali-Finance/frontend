@@ -10,8 +10,6 @@ class Invest extends StatefulWidget {
 }
 
 class _InvestState extends State<Invest> {
-  String user = 'Kimberly';
-
   @override
   Widget build(BuildContext context) {
     return Container(

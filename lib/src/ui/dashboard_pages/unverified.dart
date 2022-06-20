@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:imali/src/user.dart';
+import 'package:provider/provider.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import '../../res/styles.dart';
 
 class Unverified extends StatefulWidget {
-
   const Unverified({Key? key}) : super(key: key);
 
   @override
@@ -15,16 +16,18 @@ class _UnverifiedState extends State<Unverified> {
   final YoutubePlayerController _controller = YoutubePlayerController(
     initialVideoId: 'f7V0NELM8BQ',
     flags: const YoutubePlayerFlags(
-        autoPlay: false,
-        showLiveFullscreenButton: false,
-        useHybridComposition: false,
+      autoPlay: false,
+      showLiveFullscreenButton: false,
+      useHybridComposition: false,
     ),
-);
+  );
 
-  String user = 'Kimberly';
+  String? user;
 
   @override
   Widget build(BuildContext context) {
+    Provider.of<User>(context).getUserInformation();
+    user = Provider.of<User>(context).displayName ?? 'User';
     return Scaffold(
       body: Container(
         height: height(context),
@@ -35,7 +38,7 @@ class _UnverifiedState extends State<Unverified> {
           children: [
             const Spacer(),
             Text(
-              AppLocalizations.of(context)!.unverifiedTitle(user),
+              AppLocalizations.of(context)!.unverifiedTitle(user!),
               style: Theme.of(context).textTheme.headline4,
             ),
             const Spacer(),
@@ -46,17 +49,16 @@ class _UnverifiedState extends State<Unverified> {
             ),
             const Spacer(flex: 2),
             Container(
-              width: width(context),
-              height: 200,
-              decoration: BoxDecoration(
-                border: Border.all(
-                  color: primary(context),
+                width: width(context),
+                height: 200,
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: primary(context),
+                  ),
                 ),
-              ),
-              child: YoutubePlayer(
-                controller: _controller,
-              )
-            ),
+                child: YoutubePlayer(
+                  controller: _controller,
+                )),
             const Spacer(),
           ],
         ),

@@ -4,6 +4,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:imali/src/methods.dart';
 import 'package:imali/src/res/styles.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:provider/provider.dart';
 
 import '../portfolio.dart';
 
@@ -17,6 +18,7 @@ class Deposit extends StatefulWidget {
 class _DepositState extends State<Deposit> {
   InvestmentType? investment = InvestmentType.bonds;
   int _paymentGroup = 0;
+  double? _shares, _bonds, _mmf;
   final GlobalKey<FormState> _form = GlobalKey<FormState>(),
       _mpesaForm = GlobalKey<FormState>(),
       _bankForm = GlobalKey<FormState>();
@@ -28,6 +30,10 @@ class _DepositState extends State<Deposit> {
 
   @override
   Widget build(BuildContext context) {
+    Provider.of<Portfolio>(context).getPortfolioValues();
+    _shares = Provider.of<Portfolio>(context).sharesValue ?? 0;
+    _bonds = Provider.of<Portfolio>(context).bondsValue ?? 0;
+    _mmf = Provider.of<Portfolio>(context).mmfValue ?? 0;
     return Scaffold(
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
@@ -246,7 +252,7 @@ class _DepositState extends State<Deposit> {
         ),
         const Spacer(),
         Text(
-          _assetValue(sharesValue, bondsValue, mmfValue),
+          _assetValue(_shares.toString(), _bonds.toString(), _mmf.toString()),
           style: TextStyle(
             color: primary(context).withOpacity(0.5),
           ),
@@ -309,9 +315,9 @@ class _DepositState extends State<Deposit> {
   }
 
   String _received() {
-    double sharesAmount = double.parse(_amount.text) / double.parse(sharesValue);
-    double bondAmount = double.parse(_amount.text) / double.parse(bondsValue);
-    double mmfAmount = double.parse(_amount.text) / double.parse(mmfValue);
+    double sharesAmount = double.parse(_amount.text) / _shares!;
+    double bondAmount = double.parse(_amount.text) / _bonds!;
+    double mmfAmount = double.parse(_amount.text) / _mmf!;
     switch (investment) {
       case InvestmentType.shares:
         return sharesAmount.toStringAsFixed(2);

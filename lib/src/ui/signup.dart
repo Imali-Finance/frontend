@@ -4,9 +4,10 @@ import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:imali/src/methods.dart';
+import 'package:imali/src/user.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
+import 'package:provider/provider.dart';
 import '../res/styles.dart';
 
 class SignUp extends StatefulWidget {
@@ -24,7 +25,6 @@ class _SignUpState extends State<SignUp> {
       _password = TextEditingController(),
       _confirmPass = TextEditingController(),
       _dob = TextEditingController();
-  final ImagePicker _picker = ImagePicker();
   late GlobalKey<FormState> _form1, _form2, _form3;
   final PageController _controller = PageController();
   String? _cc = '+254', _smsCode;
@@ -40,6 +40,7 @@ class _SignUpState extends State<SignUp> {
 
   @override
   Widget build(BuildContext context) {
+    _id = Provider.of<User>(context).identificationPhoto;
     return Scaffold(
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
@@ -132,7 +133,7 @@ class _SignUpState extends State<SignUp> {
           const Spacer(flex: 2),
           GestureDetector(
             onTap: () => _id == null
-                ? getImageFromCamera()
+                ? Provider.of<User>(context, listen: false).uploadIdentificationImageFromCamera()
                 : showCustomDialog(
                     context,
                     'Remove selected image',
@@ -178,8 +179,9 @@ class _SignUpState extends State<SignUp> {
             child: OutlinedButton(
               onPressed: () {
                 if (_id != null && _idRadio != 0) {
-                  log('Proceeded');
-                  Navigator.of(context).pushNamedAndRemoveUntil('Home', (route) => false);
+                  Provider.of<User>(context, listen: false)
+                      .storeUserInformation(_name.text, _username.text, _email.text, _cc! + _phone.text, _dob.text)
+                      .then((_) => Navigator.of(context).pushNamedAndRemoveUntil('Home', (route) => false));
                 } else {
                   showSnackbar(context, 'Please select an option and upload an image');
                 }
@@ -191,14 +193,6 @@ class _SignUpState extends State<SignUp> {
         ],
       ),
     );
-  }
-
-  Future<void> getImageFromCamera() {
-    return _picker.pickImage(source: ImageSource.camera).then(
-          (image) => setState(() {
-            _id = File(image!.path);
-          }),
-        );
   }
 
   Form verifyPhonePage(BuildContext context) {

@@ -1,6 +1,9 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:imali/src/portfolio.dart';
+import 'package:imali/src/user.dart';
+import 'package:provider/provider.dart';
 import '../../res/styles.dart';
 
 class Summary extends StatefulWidget {
@@ -11,22 +14,31 @@ class Summary extends StatefulWidget {
 }
 
 class _SummaryState extends State<Summary> {
-  String user = 'Kimberly';
+  String? user;
 
-  String? mmfVal = '0.0';
+  double? mmfVal;
+  double? bondVal;
+  double? shareVal;
 
-  String? mmfCashVal = '0.00';
+  double? mmfCashVal, shareCashVal, bondCashVal;
 
-  String? shareVal = '0.0';
-
-  String? shareCashVal = '0.00';
-
-  String? bondVal = '0.0';
-
-  String? bondCashVal = '0.00';
+  @override
+  void initState() {
+    super.initState();
+    Provider.of<User>(context, listen: false).getUserInformation();
+    Provider.of<Portfolio>(context, listen: false).getPortfolioValues();
+  }
 
   @override
   Widget build(BuildContext context) {
+    user = Provider.of<User>(context).displayName ?? 'User';
+    mmfVal = Provider.of<User>(context).mmfInvestmentValue ?? 0;
+    bondVal = Provider.of<User>(context).bondsInvestmentValue ?? 0;
+    shareVal = Provider.of<User>(context).sharesInvestmentValue ?? 0;
+    mmfCashVal = Provider.of<Portfolio>(context).mmfValue ?? 0;
+    bondCashVal = Provider.of<Portfolio>(context).bondsValue ?? 0;
+    shareCashVal = Provider.of<Portfolio>(context).sharesValue ?? 0;
+    WidgetsBinding.instance.addPostFrameCallback((_) {});
     return Scaffold(
       body: Container(
         height: height(context),
@@ -50,12 +62,12 @@ class _SummaryState extends State<Summary> {
                       ),
                       const Spacer(),
                       Text(
-                        mmfVal!,
+                        mmfVal!.toStringAsFixed(2),
                         style: Theme.of(context).textTheme.headline4!.copyWith(fontWeight: FontWeight.bold),
                       ),
                       const Spacer(),
                       Text(
-                        'KES $mmfCashVal',
+                        'KES ${(mmfCashVal! * mmfVal!).toStringAsFixed(2)}',
                       ),
                     ],
                   ),
@@ -66,12 +78,12 @@ class _SummaryState extends State<Summary> {
                       ),
                       const Spacer(),
                       Text(
-                        bondVal!,
+                        bondVal!.toStringAsFixed(2),
                         style: Theme.of(context).textTheme.headline4!.copyWith(fontWeight: FontWeight.bold),
                       ),
                       const Spacer(),
                       Text(
-                        'KES $bondCashVal',
+                        'KES ${(bondCashVal! * bondVal!).toStringAsFixed(2)}',
                       ),
                     ],
                   ),
@@ -82,12 +94,12 @@ class _SummaryState extends State<Summary> {
                       ),
                       const Spacer(),
                       Text(
-                        shareVal!,
+                        shareVal!.toStringAsFixed(2),
                         style: Theme.of(context).textTheme.headline4!.copyWith(fontWeight: FontWeight.bold),
                       ),
                       const Spacer(),
                       Text(
-                        'KES $shareCashVal',
+                        'KES ${(shareCashVal! * shareVal!).toStringAsFixed(2)}',
                       ),
                     ],
                   ),
@@ -158,7 +170,7 @@ class _SummaryState extends State<Summary> {
                 physics: const BouncingScrollPhysics(),
                 itemCount: 5,
                 itemBuilder: (context, index) {
-                  var _item = portfolioItems.where((element) => element.assetValue > 0).toList()[index];
+                  var _item = portfolioItems.where((element) => element.assetValue! > 0).toList()[index];
                   return SizedBox(
                     width: width(context),
                     child: Column(
@@ -169,7 +181,7 @@ class _SummaryState extends State<Summary> {
                             Expanded(
                               child: Align(
                                 alignment: Alignment.centerLeft,
-                                child: Text(_item.assetName,
+                                child: Text(_item.assetName!,
                                     style:
                                         Theme.of(context).textTheme.subtitle2!.copyWith(fontWeight: FontWeight.bold)),
                               ),
@@ -185,7 +197,7 @@ class _SummaryState extends State<Summary> {
                                   alignment: Alignment.centerRight,
                                   child: Text(_item.changePercentage.toString() + '%',
                                       style: Theme.of(context).textTheme.subtitle2!.copyWith(
-                                          color: _item.changePercentage.isNegative == true
+                                          color: _item.changePercentage!.isNegative == true
                                               ? Colors.red[900]
                                               : Colors.green[700]))),
                             ),

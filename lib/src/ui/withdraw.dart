@@ -4,6 +4,8 @@ import 'package:flutter_svg/svg.dart';
 import 'package:imali/src/methods.dart';
 import 'package:imali/src/res/styles.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:imali/src/user.dart';
+import 'package:provider/provider.dart';
 
 import '../portfolio.dart';
 
@@ -15,12 +17,12 @@ class Withdraw extends StatefulWidget {
 }
 
 class _WithdrawState extends State<Withdraw> {
-  String? mmfVal = '0.0', shareVal = '0.0', bondVal = '0.0';
+  double? mmfVal, shareVal, bondVal;
   InvestmentType? asset;
   PaymentType? paymentType;
   int _amountWithdrawnGroup = 0;
   int _selected = 0;
-  final String _partialAmount = '1287.23';
+  final double? _partialAmount = 1287.23;
   final GlobalKey<FormState> _form = GlobalKey<FormState>(),
       _mpesaForm = GlobalKey<FormState>(),
       _bankForm = GlobalKey<FormState>();
@@ -32,6 +34,11 @@ class _WithdrawState extends State<Withdraw> {
 
   @override
   Widget build(BuildContext context) {
+    Provider.of<User>(context).getUserInformation();
+    Provider.of<Portfolio>(context).getPortfolioValues();
+    mmfVal = Provider.of<User>(context).mmfInvestmentValue ?? 0;
+    shareVal = Provider.of<User>(context).sharesInvestmentValue ?? 0;
+    bondVal = Provider.of<User>(context).bondsInvestmentValue ?? 0;
     return Scaffold(
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
@@ -199,12 +206,12 @@ class _WithdrawState extends State<Withdraw> {
                     ),
                     const Spacer(),
                     Text(
-                      shareVal!,
+                      shareVal!.toString(),
                       style: Theme.of(context).textTheme.headline4!.copyWith(fontWeight: FontWeight.bold),
                     ),
                     const Spacer(),
                     Text(
-                      'KES $sharesValue',
+                      'KES ${Provider.of<Portfolio>(context).sharesValue}',
                       style: TextStyle(color: primary(context)),
                     ),
                   ],
@@ -231,12 +238,12 @@ class _WithdrawState extends State<Withdraw> {
                     ),
                     const Spacer(),
                     Text(
-                      bondVal!,
+                      bondVal!.toString(),
                       style: Theme.of(context).textTheme.headline4!.copyWith(fontWeight: FontWeight.bold),
                     ),
                     const Spacer(),
                     Text(
-                      'KES $bondsValue',
+                      'KES ${Provider.of<Portfolio>(context).bondsValue}',
                       style: TextStyle(color: primary(context)),
                     ),
                   ],
@@ -263,12 +270,12 @@ class _WithdrawState extends State<Withdraw> {
                     ),
                     const Spacer(),
                     Text(
-                      mmfVal!,
+                      mmfVal!.toString(),
                       style: Theme.of(context).textTheme.headline4!.copyWith(fontWeight: FontWeight.bold),
                     ),
                     const Spacer(),
                     Text(
-                      'KES $mmfValue',
+                      'KES ${Provider.of<Portfolio>(context).mmfValue}',
                       style: TextStyle(color: primary(context)),
                     ),
                   ],

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:imali/src/user.dart';
+import 'package:provider/provider.dart';
 import '../../methods.dart';
 import '../../res/styles.dart';
 
@@ -12,16 +14,18 @@ class Account extends StatefulWidget {
 }
 
 class _AccountState extends State<Account> {
-  String user = 'Kimberly Kuya';
-
-  String username = 'kimberlykuya';
-
-  String email = 'kimberlykeisha9@gmail.com';
-
-  String phoneNumber = '+254712345678';
+  String? user;
+  String? username;
+  String? email;
+  String? phoneNumber;
 
   @override
   Widget build(BuildContext context) {
+    Provider.of<User>(context).getUserInformation();
+    user = Provider.of<User>(context).displayName ?? 'User';
+    username = Provider.of<User>(context).username ?? 'user';
+    email = Provider.of<User>(context).email ?? 'N/A';
+    phoneNumber = Provider.of<User>(context).phone ?? 'N/A';
     return Container(
       height: height(context),
       width: width(context),
@@ -35,7 +39,7 @@ class _AccountState extends State<Account> {
           ),
           Center(
             child: Text(
-              user,
+              user!,
               style: Theme.of(context).textTheme.subtitle2,
             ),
           ),
@@ -46,11 +50,11 @@ class _AccountState extends State<Account> {
           const Padding(
             padding: EdgeInsets.only(top: 25),
           ),
-          Center(child: Text(email)),
+          Center(child: Text(email!)),
           const Padding(
             padding: EdgeInsets.only(top: 10),
           ),
-          Center(child: Text(phoneNumber)),
+          Center(child: Text(phoneNumber!)),
           const Padding(
             padding: EdgeInsets.only(top: 25),
           ),
@@ -278,6 +282,7 @@ class _AccountState extends State<Account> {
               TextButton(
                 child: Text(AppLocalizations.of(context)!.logOut),
                 onPressed: () {
+                  Provider.of<User>(context, listen: false).clearLocalStorage();
                   Navigator.of(context).pushNamedAndRemoveUntil('Home', (route) => false);
                 },
               ),
