@@ -113,7 +113,9 @@ class _SummaryState extends State<Summary> {
                   child: IconButton(
                     iconSize: 10,
                     padding: const EdgeInsets.all(0),
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.of(context).pushNamed('Detailed Portfolio');
+                    },
                     icon: Icon(
                       Icons.arrow_forward_ios_outlined,
                       color: primary(context),
@@ -167,7 +169,9 @@ class _SummaryState extends State<Summary> {
                             Expanded(
                               child: Align(
                                 alignment: Alignment.centerLeft,
-                                child: Text(_item.assetName, style: Theme.of(context).textTheme.subtitle2!.copyWith(fontWeight: FontWeight.bold)),
+                                child: Text(_item.assetName,
+                                    style:
+                                        Theme.of(context).textTheme.subtitle2!.copyWith(fontWeight: FontWeight.bold)),
                               ),
                             ),
                             Expanded(
@@ -178,20 +182,22 @@ class _SummaryState extends State<Summary> {
                             ),
                             Expanded(
                               child: Align(
-                                alignment: Alignment.centerRight,
-                                child: Text(_item.changePercentage.toString()+ '%', style: Theme.of(context).textTheme.subtitle2!.copyWith(color: _item.changePercentage.isNegative == true ? Colors.red[900] : Colors.green[700]))
-                              ),
+                                  alignment: Alignment.centerRight,
+                                  child: Text(_item.changePercentage.toString() + '%',
+                                      style: Theme.of(context).textTheme.subtitle2!.copyWith(
+                                          color: _item.changePercentage.isNegative == true
+                                              ? Colors.red[900]
+                                              : Colors.green[700]))),
                             ),
                           ],
                         ),
-                      const Padding(padding: EdgeInsets.only(top: 10)),
+                        const Padding(padding: EdgeInsets.only(top: 10)),
                       ],
                     ),
                   );
                 },
               ),
             ),
-            const Spacer(),
           ],
         ),
       ),

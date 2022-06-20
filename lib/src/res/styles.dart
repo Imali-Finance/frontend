@@ -30,6 +30,15 @@ var themeData = ThemeData(
       shape: const RoundedRectangleBorder(),
     ),
   ),
+  textButtonTheme: TextButtonThemeData(
+    style: TextButton.styleFrom(
+      padding: const EdgeInsets.all(0),
+    ),
+  ),
+  chipTheme: ChipThemeData(
+    selectedColor: Colors.white.withOpacity(0.5),
+    backgroundColor: Colors.transparent,
+  ),
   inputDecorationTheme: InputDecorationTheme(
     suffixIconColor: Colors.white,
     iconColor: Colors.white,

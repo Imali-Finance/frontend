@@ -5,6 +5,7 @@ import 'package:imali/src/ui/dashboard_pages/unverified.dart';
 import '../res/styles.dart';
 import 'dashboard_pages/account.dart';
 import 'dashboard_pages/invest.dart';
+import 'dashboard_pages/user_summary.dart';
 
 class Dashboard extends StatefulWidget {
   const Dashboard({Key? key}) : super(key: key);
@@ -15,6 +16,7 @@ class Dashboard extends StatefulWidget {
 
 class _DashboardState extends State<Dashboard> with TickerProviderStateMixin {
   late final TabController _tabController;
+  final bool? _isVerified = true;
   @override
   void initState() {
     super.initState();
@@ -34,11 +36,11 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin {
       ),
       body: TabBarView(
         controller: _tabController,
-        children: const [
-          Unverified(),
-          Invest(),
-          Tutorials(),
-          Account(),
+        children: [
+          _isVerified! ? const Summary() : const Unverified(),
+          const Invest(),
+          const Tutorials(),
+          const Account(),
         ],
       ),
       bottomNavigationBar: Padding(

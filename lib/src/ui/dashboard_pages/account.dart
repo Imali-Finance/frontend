@@ -5,7 +5,6 @@ import '../../methods.dart';
 import '../../res/styles.dart';
 
 class Account extends StatefulWidget {
-
   const Account({Key? key}) : super(key: key);
 
   @override
@@ -60,7 +59,9 @@ class _AccountState extends State<Account> {
             children: [
               TextButton(
                 child: Text(AppLocalizations.of(context)!.editProfile),
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.of(context).pushNamed('Profile');
+                },
               ),
               Container(
                 height: 25,
@@ -73,7 +74,9 @@ class _AccountState extends State<Account> {
                 child: IconButton(
                   iconSize: 10,
                   padding: const EdgeInsets.all(0),
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.of(context).pushNamed('Profile');
+                  },
                   icon: Icon(
                     Icons.arrow_forward_ios_outlined,
                     color: primary(context),
@@ -210,7 +213,9 @@ class _AccountState extends State<Account> {
             children: [
               TextButton(
                 child: Text(AppLocalizations.of(context)!.help),
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.of(context).pushNamed('Help');
+                },
               ),
               Container(
                 height: 25,
@@ -223,7 +228,9 @@ class _AccountState extends State<Account> {
                 child: IconButton(
                   iconSize: 10,
                   padding: const EdgeInsets.all(0),
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.of(context).pushNamed('Help');
+                  },
                   icon: Icon(
                     Icons.arrow_forward_ios_outlined,
                     color: primary(context),
@@ -270,7 +277,9 @@ class _AccountState extends State<Account> {
             children: [
               TextButton(
                 child: Text(AppLocalizations.of(context)!.logOut),
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.of(context).pushNamedAndRemoveUntil('Home', (route) => false);
+                },
               ),
               Container(
                 height: 25,

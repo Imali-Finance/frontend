@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:imali/src/ui/deposit.dart';
+import 'package:imali/src/ui/detailed_portfolio.dart';
 import 'package:imali/src/ui/home.dart';
 import 'package:imali/src/ui/login.dart';
+import 'package:imali/src/ui/withdraw.dart';
 import 'res/styles.dart';
 import 'settings/settings_controller.dart';
 import 'ui/dashboard.dart';
+import 'ui/help.dart';
+import 'ui/profile.dart';
 import 'ui/signup.dart';
 
 /// The Widget that configures your application.
@@ -55,9 +60,12 @@ class MyApp extends StatelessWidget {
             'Log In': (context) => const LogIn(),
             'Sign Up': (context) => const SignUp(),
             'Dashboard': (context) => const Dashboard(),
+            'Deposit': (context) => const Deposit(),
+            'Withdraw': (context) => const Withdraw(),
+            'Profile': (context) => const Profile(),
+            'Help': (context) =>  const Help(),
+            'Detailed Portfolio': (context) => const DetailedPortfolio(),
           },
-          // Define a function to handle named routes in order to support
-          // Flutter web url navigation and deep linking.
         );
       },
     );

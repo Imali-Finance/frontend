@@ -159,41 +159,36 @@ class _LogInState extends State<LogIn> {
                 ),
               ),
               const Spacer(),
-              Expanded(
-                flex: 4,
-                child: Center(
-                  child: SizedBox(
-                    width: width(context),
-                    child: OutlinedButton(
-                      onPressed: () {
-                        if (_form.currentState!.validate()) {
-                          log('Proceeded');
-                          log(_email.text);
-                          log(_password.text);
-                          setState(() {
-                            _email.clear();
-                            _password.clear();
-                          });
-                          showCustomDialog(context, AppLocalizations.of(context)!.unverifiedEmailTitle,
-                              AppLocalizations.of(context)!.unverifiedEmailBody, [
-                            TextButton(
-                              child: Text(AppLocalizations.of(context)!.resendVerification),
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                            ),
-                            TextButton(
-                              child: Text(AppLocalizations.of(context)!.ok),
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                            ),
-                          ]);
-                        }
-                      },
-                      child: Text(AppLocalizations.of(context)!.loginButton),
-                    ),
-                  ),
+              SizedBox(
+                width: width(context),
+                child: OutlinedButton(
+                  onPressed: () {
+                    if (_form.currentState!.validate()) {
+                      log('Proceeded');
+                      log(_email.text);
+                      log(_password.text);
+                      setState(() {
+                        _email.clear();
+                        _password.clear();
+                      });
+                      showCustomDialog(context, AppLocalizations.of(context)!.unverifiedEmailTitle,
+                          AppLocalizations.of(context)!.unverifiedEmailBody, [
+                        TextButton(
+                          child: Text(AppLocalizations.of(context)!.resendVerification),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                        TextButton(
+                          child: Text(AppLocalizations.of(context)!.ok),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                      ]);
+                    }
+                  },
+                  child: Text(AppLocalizations.of(context)!.loginButton),
                 ),
               ),
               const Spacer(),

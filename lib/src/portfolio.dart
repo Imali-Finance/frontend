@@ -6,6 +6,8 @@ class Portfolio {
   Portfolio(this.assetName, this.assetType, this.assetValue, this.changePercentage);
 }
 
+String sharesValue = '1200.01', bondsValue = '450.14', mmfValue = '341.22';
+
 List<Portfolio> portfolioItems = [
   Portfolio('Imali MMF', 'MMF', 751.00, -0.07),
   Portfolio('Global MMF', 'MMF', 726.00, 0.07),
@@ -16,3 +18,9 @@ List<Portfolio> portfolioItems = [
   Portfolio('National Bond', 'Bond', 751.00, -0.07),
   Portfolio('Federal Bond', 'Bond', 200.00, 0.80),
 ];
+
+enum InvestmentType {
+  shares,
+  bonds,
+  mmf,
+}
