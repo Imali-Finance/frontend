@@ -4,6 +4,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:imali/src/methods.dart';
 import 'package:imali/src/res/styles.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:imali/src/user.dart';
 import 'package:provider/provider.dart';
 
 import '../portfolio.dart';
@@ -18,7 +19,7 @@ class Deposit extends StatefulWidget {
 class _DepositState extends State<Deposit> {
   InvestmentType? investment = InvestmentType.bonds;
   int _paymentGroup = 0;
-  double? _shares, _bonds, _mmf;
+  double? _shares, _bonds, _mmf, _enteredPriceCalculation = 0, mmfCashVal = 0, bondCashVal = 0, shareCashVal = 0;
   final GlobalKey<FormState> _form = GlobalKey<FormState>(),
       _mpesaForm = GlobalKey<FormState>(),
       _bankForm = GlobalKey<FormState>();
@@ -34,6 +35,9 @@ class _DepositState extends State<Deposit> {
     _shares = Provider.of<Portfolio>(context).sharesValue ?? 0;
     _bonds = Provider.of<Portfolio>(context).bondsValue ?? 0;
     _mmf = Provider.of<Portfolio>(context).mmfValue ?? 0;
+    mmfCashVal = Provider.of<Portfolio>(context).mmfValue ?? 0;
+    bondCashVal = Provider.of<Portfolio>(context).bondsValue ?? 0;
+    shareCashVal = Provider.of<Portfolio>(context).sharesValue ?? 0;
     return Scaffold(
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
@@ -223,11 +227,19 @@ class _DepositState extends State<Deposit> {
                 if (_paymentGroup == 1) {
                   if (_mpesaForm.currentState!.validate()) {
                     log('M-Pesa payment number is +254${_mpesaNumber.text}');
+                    storeData('purchaseAmount', doub: double.parse(_received())).then((value) =>
+                        Provider.of<User>(context, listen: false)
+                            .purchaseAsset(investment!)
+                            .then((value) => Navigator.of(context).pop()));
                   }
                 }
                 if (_paymentGroup == 2) {
                   if (_bankForm.currentState!.validate()) {
                     log('Banking details are: Bank Account Number ${_bankAccount.text} and SWIFT Code ${_swiftCode.text}');
+                    storeData('purchaseAmount', doub: double.parse(_received())).then((value) =>
+                        Provider.of<User>(context, listen: false)
+                            .purchaseAsset(investment!)
+                            .then((value) => Navigator.of(context).pop()));
                   }
                 }
               } else {
@@ -257,6 +269,13 @@ class _DepositState extends State<Deposit> {
             color: primary(context).withOpacity(0.5),
           ),
         ),
+        const Spacer(),
+        Text(
+          'You will receive ${_estimatedValue()}',
+          style: TextStyle(
+            color: primary(context).withOpacity(0.5),
+          ),
+        ),
         const Spacer(flex: 2),
         Form(
           key: _form,
@@ -276,6 +295,9 @@ class _DepositState extends State<Deposit> {
                 return 'There seems to be something that is not a number here';
               }
               return null;
+            },
+            onChanged: (val) {
+              setState(() => _enteredPriceCalculation = double.parse(val.isNotEmpty ? val : '0'));
             },
             keyboardType: TextInputType.number,
             style: Theme.of(context).textTheme.headline4,
@@ -314,10 +336,27 @@ class _DepositState extends State<Deposit> {
     );
   }
 
+  String _estimatedValue() {
+    double sharesAmount = _enteredPriceCalculation! / shareCashVal!;
+    double bondAmount = _enteredPriceCalculation! / bondCashVal!;
+    double mmfAmount = _enteredPriceCalculation! / mmfCashVal!;
+    switch (investment) {
+      case InvestmentType.shares:
+        return sharesAmount.toStringAsFixed(2) + ' Share value';
+      case InvestmentType.bonds:
+        return bondAmount.toStringAsFixed(2) + ' Bond value';
+      case InvestmentType.mmf:
+        return mmfAmount.toStringAsFixed(2) + ' MMF value';
+      default:
+        '0';
+    }
+    return '0';
+  }
+
   String _received() {
-    double sharesAmount = double.parse(_amount.text) / _shares!;
-    double bondAmount = double.parse(_amount.text) / _bonds!;
-    double mmfAmount = double.parse(_amount.text) / _mmf!;
+    double sharesAmount = double.parse(_amount.text.isNotEmpty ? _amount.text : '0') / _shares!;
+    double bondAmount = double.parse(_amount.text.isNotEmpty ? _amount.text : '0') / _bonds!;
+    double mmfAmount = double.parse(_amount.text.isNotEmpty ? _amount.text : '0') / _mmf!;
     switch (investment) {
       case InvestmentType.shares:
         return sharesAmount.toStringAsFixed(2);

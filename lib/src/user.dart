@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:imali/src/methods.dart';
+import 'package:imali/src/portfolio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class User extends ChangeNotifier {
@@ -48,9 +49,9 @@ class User extends ChangeNotifier {
     _isFacebookLinked = false;
     _isGmailLinked = false;
     _isTwitterLinked = false;
-    _mmfInvestmentValue = 0.43;
-    _sharesInvestmentValue = 1.84;
-    _bondsInvestmentValue = 0.00;
+    _mmfInvestmentValue = _prefs.getDouble('mmfInvestmentValue');
+    _sharesInvestmentValue = _prefs.getDouble('sharesInvestmentValue');
+    _bondsInvestmentValue = _prefs.getDouble('bondsInvestmentValue');
     log('Gotten user information');
     notifyListeners();
   }
@@ -70,6 +71,9 @@ class User extends ChangeNotifier {
           (value) => storeData('email', string: email).then((value) => storeData('phone', string: phone).then((value) =>
               storeData('dob', string: dob).then(
                   (value) => log('The information of this user has been saved successfully to persistent storage'))))));
+      await storeData('mmfInvestmentValue', doub: 0);
+      await storeData('sharesInvestmentValue', doub: 0);
+      await storeData('bondsInvestmentValue', doub: 0);
     } on Exception catch (e) {
       log(e.toString());
     }
@@ -90,5 +94,30 @@ class User extends ChangeNotifier {
           if (image != null) {_identificationPhoto = File(image.path), notifyListeners()}
         });
     notifyListeners();
+  }
+
+  // Purchase Asset
+  Future<void> purchaseAsset(InvestmentType type) async {
+    SharedPreferences _prefs = await SharedPreferences.getInstance();
+    switch (type) {
+      case InvestmentType.shares:
+        double? _amount = _prefs.getDouble('purchaseAmount');
+        double? _sharesValue = _prefs.getDouble('sharesInvestmentValue');
+        storeData('sharesInvestmentValue', doub: _amount! + _sharesValue!);
+        log('Purchased shares');
+        return;
+      case InvestmentType.bonds:
+        double? _amount = _prefs.getDouble('purchaseAmount');
+        double? _bondsValue = _prefs.getDouble('bondsInvestmentValue');
+        storeData('bondsInvestmentValue', doub: _amount! + _bondsValue!);
+        log('Purchased bonds');
+        return;
+      case InvestmentType.mmf:
+        double? _amount = _prefs.getDouble('purchaseAmount');
+        double? _mmfValue = _prefs.getDouble('mmfInvestmentValue');
+        storeData('mmfInvestmentValue', doub: _amount! + _mmfValue!);
+        log('Purchased mmf');
+        return;
+    }
   }
 }

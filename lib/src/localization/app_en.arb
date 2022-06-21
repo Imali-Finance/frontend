@@ -124,5 +124,7 @@
   "successBody": "We have received your report and one of our team members will get back to you within the next 48 hours.",
   "unverifiedEmailTitle": "You're email is not verified",
   "unverifiedEmailBody": "Please check your inbox for a verification mail in order to proceed. Check your spam folder as well.",
-  "resendVerification": "Resend Verification"
+  "resendVerification": "Resend Verification",
+  "yes": "Yes",
+  "no": "No"
 }

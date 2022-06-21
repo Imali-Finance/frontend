@@ -1,8 +1,11 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:imali/src/user.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../methods.dart';
 import '../../res/styles.dart';
 
@@ -97,7 +100,9 @@ class _AccountState extends State<Account> {
             children: [
               TextButton(
                 child: Text(AppLocalizations.of(context)!.notifications),
-                onPressed: () {},
+                onPressed: () {
+                  showSnackbar(context, 'Sorry, this feature is not currently available');
+                },
               ),
               Container(
                 height: 25,
@@ -127,7 +132,16 @@ class _AccountState extends State<Account> {
             children: [
               TextButton(
                 child: Text(AppLocalizations.of(context)!.lang),
-                onPressed: () {},
+                onPressed: () {
+                  showCustomDialog(
+                      context,
+                      'Change your language',
+                      'Currently the only availabe language is English. More languages will be added in a later update.',
+                      [
+                        TextButton(
+                            child: Text(AppLocalizations.of(context)!.ok), onPressed: () => Navigator.of(context).pop())
+                      ]);
+                },
               ),
               Container(
                 height: 25,
@@ -157,7 +171,9 @@ class _AccountState extends State<Account> {
             children: [
               TextButton(
                 child: Text(AppLocalizations.of(context)!.aboutUs),
-                onPressed: () {},
+                onPressed: () {
+                  showSnackbar(context, 'Sorry, this feature is not currently available');
+                },
               ),
               Container(
                 height: 25,
@@ -187,7 +203,9 @@ class _AccountState extends State<Account> {
             children: [
               TextButton(
                 child: Text(AppLocalizations.of(context)!.privacyPolicy),
-                onPressed: () {},
+                onPressed: () {
+                  showSnackbar(context, 'Sorry, this feature is not currently available');
+                },
               ),
               Container(
                 height: 25,
@@ -251,7 +269,13 @@ class _AccountState extends State<Account> {
             children: [
               TextButton(
                 child: Text(AppLocalizations.of(context)!.theme),
-                onPressed: () {},
+                onPressed: () {
+                  showCustomDialog(context, 'Change Theme',
+                      'At the moment, Imali only supports dark mode. More theme options will be available soon.', [
+                    TextButton(
+                        child: Text(AppLocalizations.of(context)!.ok), onPressed: () => Navigator.of(context).pop())
+                  ]);
+                },
               ),
               Container(
                 height: 25,
@@ -282,8 +306,20 @@ class _AccountState extends State<Account> {
               TextButton(
                 child: Text(AppLocalizations.of(context)!.logOut),
                 onPressed: () {
-                  Provider.of<User>(context, listen: false).clearLocalStorage();
-                  Navigator.of(context).pushNamedAndRemoveUntil('Home', (route) => false);
+                  showCustomDialog(
+                      context, 'Log out of your account', 'Are you sure you want to log out of your Imali account?', [
+                    TextButton(
+                        onPressed: () {
+                          Provider.of<User>(context, listen: false).clearLocalStorage();
+                          Navigator.of(context).pushNamedAndRemoveUntil('Home', (route) => false);
+                        },
+                        child: Text(AppLocalizations.of(context)!.yes)),
+                    TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: Text(AppLocalizations.of(context)!.no)),
+                  ]);
                 },
               ),
               Container(
@@ -321,9 +357,7 @@ class _AccountState extends State<Account> {
                 MouseRegion(
                   cursor: SystemMouseCursors.click,
                   child: GestureDetector(
-                    onTap: () => {
-                      showSnackbar(context, 'This feature is not currently available.'),
-                    },
+                    onTap: () => _launchURL('https://www.facebook.com'),
                     child: Container(
                       height: 25,
                       width: 25,
@@ -345,9 +379,7 @@ class _AccountState extends State<Account> {
                 MouseRegion(
                   cursor: SystemMouseCursors.click,
                   child: GestureDetector(
-                    onTap: () => {
-                      showSnackbar(context, 'This feature is not currently available.'),
-                    },
+                    onTap: () => _launchURL('https://www.google.com'),
                     child: Container(
                       height: 25,
                       width: 25,
@@ -369,9 +401,7 @@ class _AccountState extends State<Account> {
                 MouseRegion(
                   cursor: SystemMouseCursors.click,
                   child: GestureDetector(
-                    onTap: () => {
-                      showSnackbar(context, 'This feature is not currently available.'),
-                    },
+                    onTap: () => _launchURL('https://www.twitter.com'),
                     child: Container(
                       height: 25,
                       width: 25,
@@ -396,5 +426,14 @@ class _AccountState extends State<Account> {
         ],
       ),
     );
+  }
+
+  _launchURL(String url) async {
+    final Uri _url = Uri.parse(url);
+    if (!await launchUrl(_url)) {
+      log('An error occured');
+      showSnackbar(context, 'Something went wrong');
+    }
+
   }
 }

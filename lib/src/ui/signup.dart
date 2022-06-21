@@ -348,7 +348,10 @@ class _SignUpState extends State<SignUp> {
                     controller: _name,
                     validator: (val) {
                       if (val!.isEmpty) return 'Please enter your name';
-                      if (val.length <= 3) return 'Please enter a valid name';
+                      if (val.length <= 3) return 'Name cannot be less than 3 characters';
+                      if (val.length > 20) return 'Display name cannot be more than 20 characters';
+                      if (!RegExp(r'^(?=.{3,20}$)(?![ .])(?!.*[ .]{2})[a-zA-Z. ]+(?<![ .])$').hasMatch(val))
+                        return 'Do not use characters or numbers on your display name';
                       return null;
                     },
                     autofillHints: const [AutofillHints.name],
@@ -400,9 +403,12 @@ class _SignUpState extends State<SignUp> {
                           child: CountryCodePicker(
                             countryFilter: const ['KE', 'TZ', 'UG'],
                             initialSelection: 'KE',
+                            onInit: (val) {
+                              _cc = '+254';
+                            },
                             onChanged: (code) {
                               setState(() {
-                                _cc = code.code;
+                                _cc = code.dialCode;
                               });
                             },
                           ),
@@ -416,7 +422,7 @@ class _SignUpState extends State<SignUp> {
                             controller: _phone,
                             validator: (val) {
                               if (val!.isEmpty) return 'Please enter your phone number';
-                              if (val.length < 9) return 'Please enter a valid phone number';
+                              if (val.length != 9) return 'Please enter a valid phone number';
                               return null;
                             },
                             maxLength: 9,
