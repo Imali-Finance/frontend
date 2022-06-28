@@ -53,18 +53,20 @@ class _DepositState extends State<Deposit> {
           ),
         ),
       ),
-      body: Container(
-        height: height(context),
-        width: width(context),
-        padding: const EdgeInsets.all(30),
-        child: PageView(
-          controller: _controller,
-          physics: const NeverScrollableScrollPhysics(),
-          children: [
-            investmentType(context),
-            purchaseAmount(context),
-            confirmSelection(context),
-          ],
+      body: SingleChildScrollView(
+        child: Container(
+          height: height(context)*0.9,
+          width: width(context),
+          padding: const EdgeInsets.all(30),
+          child: PageView(
+            controller: _controller,
+            physics: const NeverScrollableScrollPhysics(),
+            children: [
+              investmentType(context),
+              purchaseAmount(context),
+              confirmSelection(context),
+            ],
+          ),
         ),
       ),
     );
@@ -229,7 +231,7 @@ class _DepositState extends State<Deposit> {
                     log('M-Pesa payment number is +254${_mpesaNumber.text}');
                     storeData('purchaseAmount', doub: double.parse(_received())).then((value) =>
                         Provider.of<User>(context, listen: false)
-                            .purchaseAsset(investment!)
+                            .purchaseAssetViaMpesa(investment!)
                             .then((value) => Navigator.of(context).pop()));
                   }
                 }
@@ -238,7 +240,7 @@ class _DepositState extends State<Deposit> {
                     log('Banking details are: Bank Account Number ${_bankAccount.text} and SWIFT Code ${_swiftCode.text}');
                     storeData('purchaseAmount', doub: double.parse(_received())).then((value) =>
                         Provider.of<User>(context, listen: false)
-                            .purchaseAsset(investment!)
+                            .purchaseAssetViaBank(investment!)
                             .then((value) => Navigator.of(context).pop()));
                   }
                 }

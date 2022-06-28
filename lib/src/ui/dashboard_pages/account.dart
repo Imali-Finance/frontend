@@ -130,18 +130,21 @@ class _AccountState extends State<Account> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              TextButton(
-                child: Text(AppLocalizations.of(context)!.lang),
-                onPressed: () {
-                  showCustomDialog(
-                      context,
-                      'Change your language',
-                      'Currently the only availabe language is English. More languages will be added in a later update.',
-                      [
-                        TextButton(
-                            child: Text(AppLocalizations.of(context)!.ok), onPressed: () => Navigator.of(context).pop())
-                      ]);
-                },
+              Align(
+                alignment: Alignment.centerLeft,
+                child: TextButton(
+                  child: Text(AppLocalizations.of(context)!.lang, textAlign: TextAlign.left),
+                  onPressed: () {
+                    showCustomDialog(
+                        context,
+                        'Change your language',
+                        'Currently the only available language is English. More languages will be added in a later update.',
+                        [
+                          TextButton(
+                              child: Text(AppLocalizations.of(context)!.ok), onPressed: () => Navigator.of(context).pop())
+                        ]);
+                  },
+                ),
               ),
               Container(
                 height: 25,

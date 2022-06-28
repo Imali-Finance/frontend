@@ -33,6 +33,7 @@ var themeData = ThemeData(
   textButtonTheme: TextButtonThemeData(
     style: TextButton.styleFrom(
       padding: const EdgeInsets.all(0),
+      alignment: Alignment.centerLeft,
     ),
   ),
   chipTheme: ChipThemeData(
@@ -147,6 +148,7 @@ Future<void> showCustomDialog(BuildContext context, String title, String content
               )
             : Wrap(children: otherActions),
         actions: actions,
+        actionsAlignment: MainAxisAlignment.spaceEvenly,
       ),
     ),
   );

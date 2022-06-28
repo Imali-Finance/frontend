@@ -13,7 +13,8 @@
       "name": "imali no build",
       "request": "launch",
       "type": "dart",
-      "args": ["--use-application-binary=./build/app/outputs/flutter-apk/app-debug.apk"]
+      "flutterMode": "release",
+      "args": ["--use-application-binary=./build/app/outputs/flutter-apk/app-release.apk"]
     },
     {
       "name": "imali (profile mode)",

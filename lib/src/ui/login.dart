@@ -131,6 +131,8 @@ class _LogInState extends State<LogIn> {
               ),
               const Spacer(),
               TextFormField(
+                keyboardType: TextInputType.emailAddress,
+                autofillHints: const [AutofillHints.email],
                 controller: _email,
                 validator: (val) {
                   if (val!.isEmpty) return 'Please enter your email address';
@@ -144,6 +146,7 @@ class _LogInState extends State<LogIn> {
                   if (val!.isEmpty) return 'Please enter your password';
                   return null;
                 },
+                autofillHints: const [AutofillHints.password],
                 controller: _password,
                 decoration: InputDecoration(hintText: AppLocalizations.of(context)!.password),
                 obscureText: true,
@@ -152,7 +155,23 @@ class _LogInState extends State<LogIn> {
               Align(
                 alignment: Alignment.centerRight,
                 child: TextButton(
-                  onPressed: () => {},
+                  onPressed: () => {
+                    showCustomDialog(context, AppLocalizations.of(context)!.unverifiedEmailTitle,
+                        AppLocalizations.of(context)!.unverifiedEmailBody, [
+                      TextButton(
+                        child: Text(AppLocalizations.of(context)!.resendVerification),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                      TextButton(
+                        child: Text(AppLocalizations.of(context)!.ok),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                    ]),
+                  },
                   child: Text(
                     AppLocalizations.of(context)!.forgot,
                   ),
@@ -165,27 +184,11 @@ class _LogInState extends State<LogIn> {
                   onPressed: () {
                     if (_form.currentState!.validate()) {
                       log('Proceeded');
-                      log(_email.text);
-                      log(_password.text);
                       setState(() {
                         _email.clear();
                         _password.clear();
                       });
-                      showCustomDialog(context, AppLocalizations.of(context)!.unverifiedEmailTitle,
-                          AppLocalizations.of(context)!.unverifiedEmailBody, [
-                        TextButton(
-                          child: Text(AppLocalizations.of(context)!.resendVerification),
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                        ),
-                        TextButton(
-                          child: Text(AppLocalizations.of(context)!.ok),
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                        ),
-                      ]);
+                      Navigator.pushNamedAndRemoveUntil(context, 'Dashboard', (route) => false);
                     }
                   },
                   child: Text(AppLocalizations.of(context)!.loginButton),

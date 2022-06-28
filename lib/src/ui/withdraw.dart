@@ -17,7 +17,14 @@ class Withdraw extends StatefulWidget {
 }
 
 class _WithdrawState extends State<Withdraw> {
-  double? mmfVal = 0, shareVal = 0, bondVal = 0, mmfCashVal = 0, bondCashVal = 0, shareCashVal = 0, _partialNum = 0;
+  double? mmfVal = 0,
+      shareVal = 0,
+      bondVal = 0,
+      mmfCashVal = 0,
+      bondCashVal = 0,
+      shareCashVal = 0,
+      _partialNum = 0,
+      _withdrawalAmount = 0;
   InvestmentType? asset;
   PaymentType? paymentType;
   int _amountWithdrawnGroup = 0;
@@ -30,6 +37,20 @@ class _WithdrawState extends State<Withdraw> {
         return bondVal! * bondCashVal!;
       case InvestmentType.mmf:
         return mmfVal! * mmfCashVal!;
+      default:
+        0;
+        return 0;
+    }
+  }
+
+  double _amountPartialCalculated(double? partial) {
+    switch (asset) {
+      case InvestmentType.shares:
+        return shareCashVal! * (partial ?? 0);
+      case InvestmentType.bonds:
+        return bondCashVal! * (partial ?? 0);
+      case InvestmentType.mmf:
+        return mmfCashVal! * (partial ?? 0);
       default:
         0;
         return 0;
@@ -49,12 +70,14 @@ class _WithdrawState extends State<Withdraw> {
   Widget build(BuildContext context) {
     Provider.of<User>(context).getUserInformation();
     Provider.of<Portfolio>(context).getPortfolioValues();
+    Provider.of<Portfolio>(context).getWithdrawalAmount();
     mmfVal = Provider.of<User>(context).mmfInvestmentValue ?? 0;
     shareVal = Provider.of<User>(context).sharesInvestmentValue ?? 0;
     bondVal = Provider.of<User>(context).bondsInvestmentValue ?? 0;
     mmfCashVal = Provider.of<Portfolio>(context).mmfValue ?? 0;
     bondCashVal = Provider.of<Portfolio>(context).bondsValue ?? 0;
     shareCashVal = Provider.of<Portfolio>(context).sharesValue ?? 0;
+    _withdrawalAmount = Provider.of<Portfolio>(context).withdrawalAmount ?? 0;
     return Scaffold(
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
@@ -70,21 +93,94 @@ class _WithdrawState extends State<Withdraw> {
           ),
         ),
       ),
-      body: Container(
-        height: height(context),
-        width: width(context),
-        padding: const EdgeInsets.all(20),
-        child: PageView(
-          controller: _controller,
-          physics: const NeverScrollableScrollPhysics(),
-          children: [
-            withdrawalType(context),
-            if (paymentType == PaymentType.mpesa) mpesaPayment(),
-            if (paymentType == PaymentType.bank) bankPayment(),
-          ],
+      body: SingleChildScrollView(
+        child: Container(
+          height: height(context)*0.9,
+          width: width(context),
+          padding: const EdgeInsets.all(20),
+          child: PageView(
+            controller: _controller,
+            physics: const NeverScrollableScrollPhysics(),
+            children: [
+              withdrawalType(context),
+              if (paymentType == PaymentType.mpesa) mpesaPayment(),
+              if (paymentType == PaymentType.bank) bankPayment(),
+              Column(
+                children: [
+                  const Spacer(),
+                  Text(
+                    'Confirm your withdrawal request details',
+                    style: Theme.of(context).textTheme.subtitle2,
+                    textAlign: TextAlign.center,
+                  ),
+                  const Spacer(),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text('Asset withdrawn'),
+                      Text(AppLocalizations.of(context)!.amount),
+                    ],
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 10),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          '${_withdrawalAmount!.toStringAsFixed(2)} of ' + _confirm(),
+                          style: Theme.of(context).textTheme.subtitle2!.copyWith(fontWeight: FontWeight.bold),
+                        ),
+                        Text(
+                          'KES ' +
+                              (_amountWithdrawnGroup == 1
+                                  ? _amountCalculated().toStringAsFixed(0)
+                                  : (_amountPartialCalculated(_partialNum!)).toStringAsFixed(0)) +
+                              '.00',
+                          style: Theme.of(context).textTheme.subtitle2!.copyWith(fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const Spacer(),
+                  SizedBox(
+                    width: width(context),
+                    child: OutlinedButton(
+                      child: const Text('WITHDRAW'),
+                      onPressed: () {
+                        if (paymentType == PaymentType.mpesa) {
+                          Provider.of<User>(context, listen: false)
+                              .withdrawViaMpesa(asset!)
+                              .then((value) => Navigator.of(context).pop());
+                        } else if (paymentType == PaymentType.bank) {
+                          Provider.of<User>(context, listen: false)
+                              .withdrawViaBank(asset!)
+                              .then((value) => Navigator.of(context).pop());
+                        }
+                      },
+                    ),
+                  ),
+                  const Spacer(),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
+  }
+
+  String _confirm() {
+    switch (asset) {
+      case InvestmentType.shares:
+        return 'Imali Shares';
+      case InvestmentType.bonds:
+        return 'Imali Bonds';
+      case InvestmentType.mmf:
+        return 'Imali MMF';
+      default:
+        'An error has occured';
+    }
+    return 'Please wait';
   }
 
   Widget mpesaPayment() {
@@ -125,6 +221,8 @@ class _WithdrawState extends State<Withdraw> {
             onPressed: () {
               if (_mpesaForm.currentState!.validate()) {
                 log('M-Pesa payment number is +254${_mpesaNumber.text}');
+                FocusManager.instance.primaryFocus?.unfocus();
+                _controller.nextPage(duration: const Duration(milliseconds: 500), curve: Curves.easeInOut);
               }
             },
           ),
@@ -179,6 +277,8 @@ class _WithdrawState extends State<Withdraw> {
               onPressed: () {
                 if (_bankForm.currentState!.validate()) {
                   log('Banking details are: Bank Account Number ${_bankAccount.text} and SWIFT Code ${_swiftCode.text}');
+                  FocusManager.instance.primaryFocus?.unfocus();
+                  _controller.nextPage(duration: const Duration(milliseconds: 500), curve: Curves.easeInOut);
                 }
               },
             ),
@@ -200,104 +300,110 @@ class _WithdrawState extends State<Withdraw> {
         ),
         const Spacer(),
         Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            ChoiceChip(
-              onSelected: (val) {
-                setState(() {
-                  _selected == 1 ? {_selected = 0, asset = null} : {_selected = 1, asset = InvestmentType.shares};
-                });
-              },
-              elevation: 0,
-              shape: const RoundedRectangleBorder(),
-              avatarBorder: RoundedRectangleBorder(side: BorderSide(color: primary(context))),
-              label: Container(
-                padding: const EdgeInsets.all(10),
-                height: height(context) * 0.15,
-                child: Column(
-                  children: [
-                    Text(
-                      'Shares',
-                      style: TextStyle(color: primary(context)),
-                    ),
-                    const Spacer(),
-                    Text(
-                      shareVal!.toStringAsFixed(2),
-                      style: Theme.of(context).textTheme.headline4!.copyWith(fontWeight: FontWeight.bold),
-                    ),
-                    const Spacer(),
-                    Text(
-                      'KES ${(shareCashVal! * shareVal!).toStringAsFixed(2)}',
-                      style: TextStyle(color: primary(context)),
-                    ),
-                  ],
+            Flexible(
+              child: ChoiceChip(
+                onSelected: (val) {
+                  setState(() {
+                    _selected == 1 ? {_selected = 0, asset = null} : {_selected = 1, asset = InvestmentType.shares};
+                  });
+                },
+                elevation: 0,
+                shape: const RoundedRectangleBorder(),
+                avatarBorder: RoundedRectangleBorder(side: BorderSide(color: primary(context))),
+                label: Container(
+                  padding: const EdgeInsets.all(10),
+                  height: height(context) * 0.15,
+                  child: Column(
+                    children: [
+                      Text(
+                        'Shares',
+                        style: TextStyle(color: primary(context)),
+                      ),
+                      const Spacer(),
+                      Text(
+                        shareVal!.toStringAsFixed(2),
+                        style: Theme.of(context).textTheme.headline4!.copyWith(fontWeight: FontWeight.bold),
+                      ),
+                      const Spacer(),
+                      Text(
+                        'KES ${(shareCashVal! * shareVal!).toStringAsFixed(2)}',
+                        style: TextStyle(color: primary(context)),
+                      ),
+                    ],
+                  ),
                 ),
+                selected: _selected == 1,
               ),
-              selected: _selected == 1,
             ),
-            ChoiceChip(
-              onSelected: (val) {
-                setState(() {
-                  _selected == 2 ? {_selected = 0, asset = null} : {_selected = 2, asset = InvestmentType.bonds};
-                });
-              },
-              shape: const RoundedRectangleBorder(),
-              avatarBorder: RoundedRectangleBorder(side: BorderSide(color: primary(context))),
-              label: Container(
-                padding: const EdgeInsets.all(10),
-                height: height(context) * 0.15,
-                child: Column(
-                  children: [
-                    Text(
-                      'Bonds',
-                      style: TextStyle(color: primary(context)),
-                    ),
-                    const Spacer(),
-                    Text(
-                      bondVal!.toStringAsFixed(2),
-                      style: Theme.of(context).textTheme.headline4!.copyWith(fontWeight: FontWeight.bold),
-                    ),
-                    const Spacer(),
-                    Text(
-                      'KES ${(bondCashVal! * bondVal!).toStringAsFixed(2)}',
-                      style: TextStyle(color: primary(context)),
-                    ),
-                  ],
+            Flexible(
+              child: ChoiceChip(
+                onSelected: (val) {
+                  setState(() {
+                    _selected == 2 ? {_selected = 0, asset = null} : {_selected = 2, asset = InvestmentType.bonds};
+                  });
+                },
+                shape: const RoundedRectangleBorder(),
+                avatarBorder: RoundedRectangleBorder(side: BorderSide(color: primary(context))),
+                label: Container(
+                  padding: const EdgeInsets.all(10),
+                  height: height(context) * 0.15,
+                  child: Column(
+                    children: [
+                      Text(
+                        'Bonds',
+                        style: TextStyle(color: primary(context)),
+                      ),
+                      const Spacer(),
+                      Text(
+                        bondVal!.toStringAsFixed(2),
+                        style: Theme.of(context).textTheme.headline4!.copyWith(fontWeight: FontWeight.bold),
+                      ),
+                      const Spacer(),
+                      Text(
+                        'KES ${(bondCashVal! * bondVal!).toStringAsFixed(2)}',
+                        style: TextStyle(color: primary(context)),
+                      ),
+                    ],
+                  ),
                 ),
+                selected: _selected == 2,
               ),
-              selected: _selected == 2,
             ),
-            ChoiceChip(
-              onSelected: (val) {
-                setState(() {
-                  _selected == 3 ? {_selected = 0, asset = null} : {_selected = 3, asset = InvestmentType.mmf};
-                });
-              },
-              shape: const RoundedRectangleBorder(),
-              avatarBorder: RoundedRectangleBorder(side: BorderSide(color: primary(context))),
-              label: Container(
-                padding: const EdgeInsets.all(10),
-                height: height(context) * 0.15,
-                child: Column(
-                  children: [
-                    Text(
-                      'MMF',
-                      style: TextStyle(color: primary(context)),
-                    ),
-                    const Spacer(),
-                    Text(
-                      mmfVal!.toStringAsFixed(2),
-                      style: Theme.of(context).textTheme.headline4!.copyWith(fontWeight: FontWeight.bold),
-                    ),
-                    const Spacer(),
-                    Text(
-                      'KES ${(mmfCashVal! * mmfVal!).toStringAsFixed(2)}',
-                      style: TextStyle(color: primary(context)),
-                    ),
-                  ],
+            Flexible(
+              child: ChoiceChip(
+                onSelected: (val) {
+                  setState(() {
+                    _selected == 3 ? {_selected = 0, asset = null} : {_selected = 3, asset = InvestmentType.mmf};
+                  });
+                },
+                shape: const RoundedRectangleBorder(),
+                avatarBorder: RoundedRectangleBorder(side: BorderSide(color: primary(context))),
+                label: Container(
+                  padding: const EdgeInsets.all(10),
+                  height: height(context) * 0.15,
+                  child: Column(
+                    children: [
+                      Text(
+                        'MMF',
+                        style: TextStyle(color: primary(context)),
+                      ),
+                      const Spacer(),
+                      Text(
+                        mmfVal!.toStringAsFixed(2),
+                        style: Theme.of(context).textTheme.headline4!.copyWith(fontWeight: FontWeight.bold),
+                      ),
+                      const Spacer(),
+                      Text(
+                        'KES ${(mmfCashVal! * mmfVal!).toStringAsFixed(2)}',
+                        style: TextStyle(color: primary(context)),
+                      ),
+                    ],
+                  ),
                 ),
+                selected: _selected == 3,
               ),
-              selected: _selected == 3,
             ),
           ],
         ),
@@ -343,6 +449,7 @@ class _WithdrawState extends State<Withdraw> {
           Form(
             key: _form,
             child: TextFormField(
+              autovalidateMode: AutovalidateMode.always,
               controller: _amount,
               validator: (val) {
                 String source = val ?? '0';
@@ -404,7 +511,7 @@ class _WithdrawState extends State<Withdraw> {
           ),
         if (_amountWithdrawnGroup == 2) const Spacer(),
         Text(
-            'You will receive: KES ${_amountWithdrawnGroup == 1 ? _amountCalculated().toStringAsFixed(2) : (_amountCalculated() * _partialNum!).toStringAsFixed(2)}',
+            'You will receive: KES ${_amountWithdrawnGroup == 1 ? _amountCalculated().toStringAsFixed(0) : (_amountPartialCalculated(_partialNum!)).toStringAsFixed(0)}/-',
             style: TextStyle(color: primary(context).withOpacity(0.5))),
         const Spacer(),
         SizedBox(
@@ -414,21 +521,26 @@ class _WithdrawState extends State<Withdraw> {
             onPressed: () {
               if (_selected == 1 || _selected == 2 || _selected == 3) {
                 if (_amountWithdrawnGroup == 1 || _amountWithdrawnGroup == 2) {
-
-                    log('The user balance is ' + _amountCalculated().toString());
-                  if (_amountCalculated() > 500) {
-                    if (_amountWithdrawnGroup == 1) {
+                  log('The user balance is ' + _amountCalculated().toString());
+                  if (_amountCalculated() > 500 || _amountPartialCalculated(_partialNum) > 500) {
+                    if (_amountWithdrawnGroup == 1 && _amountCalculated() > 500) {
+                      storeData('amountWithdrawn', doub: _amountCalculated());
+                      storeAmountOfAsset();
                       setState(() {
                         paymentType = PaymentType.mpesa;
                       });
                       _controller.nextPage(duration: const Duration(milliseconds: 500), curve: Curves.easeInOut);
-                    } else if (_amountWithdrawnGroup == 2) {
+                    } else if (_amountWithdrawnGroup == 2 && _amountPartialCalculated(_partialNum) > 500) {
                       if (_form.currentState!.validate()) {
+                        storeData('amountWithdrawn', doub: _amountPartialCalculated(_partialNum));
+                        storeAmountOfAsset();
                         setState(() {
                           paymentType = PaymentType.mpesa;
                         });
                         _controller.nextPage(duration: const Duration(milliseconds: 500), curve: Curves.easeInOut);
                       }
+                    } else {
+                      showSnackbar(context, 'Your withdrawal needs to at least be KES 500');
                     }
                   } else {
                     log('The user balance is ' + _amountCalculated().toString());
@@ -451,21 +563,26 @@ class _WithdrawState extends State<Withdraw> {
             onPressed: () {
               if (_selected == 1 || _selected == 2 || _selected == 3) {
                 if (_amountWithdrawnGroup == 1 || _amountWithdrawnGroup == 2) {
-
-                    log('The user balance is ' + _amountCalculated().toString());
-                  if (_amountCalculated() > 500) {
-                    if (_amountWithdrawnGroup == 1) {
+                  log('The user balance is ' + _amountCalculated().toString());
+                  if (_amountCalculated() > 500 || _amountPartialCalculated(_partialNum) > 500) {
+                    if (_amountWithdrawnGroup == 1 && _amountCalculated() > 500) {
+                      storeData('amountWithdrawn', doub: _amountCalculated());
+                      storeAmountOfAsset();
                       setState(() {
                         paymentType = PaymentType.bank;
                       });
                       _controller.nextPage(duration: const Duration(milliseconds: 500), curve: Curves.easeInOut);
-                    } else if (_amountWithdrawnGroup == 2) {
+                    } else if (_amountWithdrawnGroup == 2 && _amountPartialCalculated(_partialNum) > 500) {
                       if (_form.currentState!.validate()) {
+                        storeData('amountWithdrawn', doub: _amountPartialCalculated(_partialNum));
+                        storeAmountOfAsset();
                         setState(() {
                           paymentType = PaymentType.bank;
                         });
                         _controller.nextPage(duration: const Duration(milliseconds: 500), curve: Curves.easeInOut);
                       }
+                    } else {
+                      showSnackbar(context, 'Your withdrawal needs to at least be KES 500');
                     }
                   } else {
                     log('The user balance is ' + _amountCalculated().toString());
@@ -483,6 +600,34 @@ class _WithdrawState extends State<Withdraw> {
         const Spacer(),
       ],
     );
+  }
+
+  storeAmountOfAsset() {
+    switch (asset) {
+      case InvestmentType.shares:
+        if (_amountWithdrawnGroup == 1) {
+          storeData('amountOfAssetWithdrawn', doub: shareVal);
+        } else if (_amountWithdrawnGroup == 2) {
+          storeData('amountOfAssetWithdrawn', doub: _partialNum);
+        }
+        break;
+      case InvestmentType.bonds:
+        if (_amountWithdrawnGroup == 1) {
+          storeData('amountOfAssetWithdrawn', doub: bondVal);
+        } else if (_amountWithdrawnGroup == 2) {
+          storeData('amountOfAssetWithdrawn', doub: _partialNum);
+        }
+        break;
+      case InvestmentType.mmf:
+        if (_amountWithdrawnGroup == 1) {
+          storeData('amountOfAssetWithdrawn', doub: mmfVal);
+        } else if (_amountWithdrawnGroup == 2) {
+          storeData('amountOfAssetWithdrawn', doub: _partialNum);
+        }
+        break;
+      default:
+        log('Oof, something was null');
+    }
   }
 }
 

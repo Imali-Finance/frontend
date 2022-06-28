@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "196599691768",
+    "project_id": "imali-finance",
+    "storage_bucket": "imali-finance.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:196599691768:android:7b798cb8dfd193b5753e0d",
+        "android_client_info": {
+          "package_name": "com.example.imali"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "196599691768-s49ehu9kvi18ooa8g9i5ima1j3lnd3ma.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC_zDvQBL8U4jkRqeI0q9NPHK2AuJg2Ghc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "196599691768-s49ehu9kvi18ooa8g9i5ima1j3lnd3ma.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

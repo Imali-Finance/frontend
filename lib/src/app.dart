@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:imali/src/ui/deposit.dart';
@@ -27,6 +28,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     // Glue the SettingsController to the MaterialApp.
     //
     // The AnimatedBuilder Widget listens to the SettingsController for changes.
@@ -41,6 +43,7 @@ class MyApp extends StatelessWidget {
           ],
           child: MaterialApp(
             theme: themeData,
+
             debugShowCheckedModeBanner: false,
             // Providing a restorationScopeId allows the Navigator built by the
             // MaterialApp to restore the navigation stack when a user leaves and
@@ -61,7 +64,7 @@ class MyApp extends StatelessWidget {
               Locale('en', ''), // English, no country code
             ],
             onGenerateTitle: (BuildContext context) => AppLocalizations.of(context)!.appTitle,
-            initialRoute: 'Dashboard',
+            initialRoute: 'Home',
             home: const Home(),
             routes: {
               'Home': (context) => const Home(),

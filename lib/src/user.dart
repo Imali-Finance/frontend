@@ -88,6 +88,53 @@ class User extends ChangeNotifier {
     }
   }
 
+  // Make withdrawal to M-Pesa
+  Future<void> withdrawViaMpesa(InvestmentType type) async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    double _amountWithdrawn = pref.getDouble('amountOfAssetWithdrawn')!;
+    switch (type) {
+      case InvestmentType.shares:
+      double _userAsset = pref.getDouble('sharesInvestmentValue')!;
+        storeData('sharesInvestmentValue', doub: _userAsset - _amountWithdrawn);
+        log('Withdrawn shares via M-Pesa');
+        return;
+      case InvestmentType.bonds:
+        double _bondsValue = pref.getDouble('bondsInvestmentValue')!;
+        storeData('bondsInvestmentValue', doub: _bondsValue - _amountWithdrawn);
+        log('Withdrawn bonds via M-Pesa');
+        return;
+      case InvestmentType.mmf:
+        double _mmfValue = pref.getDouble('mmfInvestmentValue')!;
+        storeData('mmfInvestmentValue', doub: _mmfValue - _amountWithdrawn);
+        log('Withdrawn MMF via M-Pesa');
+        return;
+    }
+  }
+
+  // Make withdrawal via bank account
+  // Make withdrawal to M-Pesa
+  Future<void> withdrawViaBank(InvestmentType type) async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    double _amountWithdrawn = pref.getDouble('amountOfAssetWithdrawn')!;
+    switch (type) {
+      case InvestmentType.shares:
+      double _userAsset = pref.getDouble('sharesInvestmentValue')!;
+        storeData('sharesInvestmentValue', doub: _userAsset - _amountWithdrawn);
+        log('Withdrawn shares via Bank');
+        return;
+      case InvestmentType.bonds:
+        double _bondsValue = pref.getDouble('bondsInvestmentValue')!;
+        storeData('bondsInvestmentValue', doub: _bondsValue - _amountWithdrawn);
+        log('Withdrawn bonds via Bank');
+        return;
+      case InvestmentType.mmf:
+        double _mmfValue = pref.getDouble('mmfInvestmentValue')!;
+        storeData('mmfInvestmentValue', doub: _mmfValue - _amountWithdrawn);
+        log('Withdrawn MMF via Bank');
+        return;
+    }
+  }
+
   // take the identification document image from the camera
   uploadIdentificationImageFromCamera() {
     _picker.pickImage(source: ImageSource.camera).then((image) => {
@@ -96,27 +143,52 @@ class User extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Purchase Asset
-  Future<void> purchaseAsset(InvestmentType type) async {
+  // Purchase Asset through M-Pesa
+  Future<void> purchaseAssetViaMpesa(InvestmentType type) async {
     SharedPreferences _prefs = await SharedPreferences.getInstance();
     switch (type) {
       case InvestmentType.shares:
-        double? _amount = _prefs.getDouble('purchaseAmount');
-        double? _sharesValue = _prefs.getDouble('sharesInvestmentValue');
-        storeData('sharesInvestmentValue', doub: _amount! + _sharesValue!);
-        log('Purchased shares');
+        double _amount = _prefs.getDouble('purchaseAmount')!;
+        double _sharesValue = _prefs.getDouble('sharesInvestmentValue')!;
+        storeData('sharesInvestmentValue', doub: _amount + _sharesValue);
+        log('Purchased shares via M-Pesa');
         return;
       case InvestmentType.bonds:
-        double? _amount = _prefs.getDouble('purchaseAmount');
-        double? _bondsValue = _prefs.getDouble('bondsInvestmentValue');
-        storeData('bondsInvestmentValue', doub: _amount! + _bondsValue!);
-        log('Purchased bonds');
+        double _amount = _prefs.getDouble('purchaseAmount')!;
+        double _bondsValue = _prefs.getDouble('bondsInvestmentValue')!;
+        storeData('bondsInvestmentValue', doub: _amount + _bondsValue);
+        log('Purchased bonds via M-Pesa');
         return;
       case InvestmentType.mmf:
-        double? _amount = _prefs.getDouble('purchaseAmount');
-        double? _mmfValue = _prefs.getDouble('mmfInvestmentValue');
-        storeData('mmfInvestmentValue', doub: _amount! + _mmfValue!);
-        log('Purchased mmf');
+        double _amount = _prefs.getDouble('purchaseAmount')!;
+        double _mmfValue = _prefs.getDouble('mmfInvestmentValue')!;
+        storeData('mmfInvestmentValue', doub: _amount + _mmfValue);
+        log('Purchased mmf via M-Pesa');
+        return;
+    }
+  }
+
+  /// Purchase asset via Bank Account
+  Future<void> purchaseAssetViaBank(InvestmentType type) async {
+    SharedPreferences _prefs = await SharedPreferences.getInstance();
+    switch (type) {
+      case InvestmentType.shares:
+        double _amount = _prefs.getDouble('purchaseAmount')!;
+        double _sharesValue = _prefs.getDouble('sharesInvestmentValue')!;
+        storeData('sharesInvestmentValue', doub: _amount + _sharesValue);
+        log('Purchased shares via bank');
+        return;
+      case InvestmentType.bonds:
+        double _amount = _prefs.getDouble('purchaseAmount')!;
+        double _bondsValue = _prefs.getDouble('bondsInvestmentValue')!;
+        storeData('bondsInvestmentValue', doub: _amount + _bondsValue);
+        log('Purchased bonds via bank');
+        return;
+      case InvestmentType.mmf:
+        double _amount = _prefs.getDouble('purchaseAmount')!;
+        double _mmfValue = _prefs.getDouble('mmfInvestmentValue')!;
+        storeData('mmfInvestmentValue', doub: _amount + _mmfValue);
+        log('Purchased mmf via bank');
         return;
     }
   }
